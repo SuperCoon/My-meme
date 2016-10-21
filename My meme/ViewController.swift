@@ -41,21 +41,24 @@ class ViewController: UIViewController , UIImagePickerControllerDelegate , UINav
     // Build the text field delegate
     var textFieldsDelegate = TextFieldsDelegate()
 
+    func configure(textField:UITextField, attributes:[String:Any]){
+        textField.defaultTextAttributes = attributes
+        textField.textAlignment = .center
+    }
     
-   override func viewWillAppear(_ animated: Bool) {
+        override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
     
     
         // Disable camera button if device doesn't have a camera
         cameraButton.isEnabled = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)
 
-        // Set text attributes for topTextField and bottomTextField
-        topTextField.defaultTextAttributes = memeTextAttributes
-        bottomTextField.defaultTextAttributes = memeTextAttributes
     
+        // Set text attributes for topTextField and bottomTextField
         // Center text in text fields
-        topTextField.textAlignment = NSTextAlignment.center
-        bottomTextField.textAlignment = NSTextAlignment.center
+    
+        configure(textField: topTextField, attributes: memeTextAttributes)
+        configure(textField: bottomTextField, attributes: memeTextAttributes)
     
         subscribeToKeyboardNotifications()
     
@@ -119,22 +122,23 @@ class ViewController: UIViewController , UIImagePickerControllerDelegate , UINav
         return true
     }
 
+    
+    func presentImagePickerWith(sourceType: UIImagePickerControllerSourceType){
+        let imagePicker = UIImagePickerController()
+        imagePicker.sourceType = sourceType
+        imagePicker.delegate = self
+        self.present(imagePicker, animated: true, completion: nil)
+
+    }
+ 
     //Pick imades from the camera
     @IBAction func pickCamera(_ sender: AnyObject) {
-        let imagePicker = UIImagePickerController()
-        imagePicker.delegate = self
-        imagePicker.sourceType = UIImagePickerControllerSourceType.camera
-        self.present(imagePicker, animated: true, completion: nil)
-    }
+       presentImagePickerWith(sourceType: UIImagePickerControllerSourceType.camera)
+  }
 
     //Pick imades from the album
     @IBAction func pickFromAlbum(_ sender: AnyObject) {
-        let imagePicker = UIImagePickerController()
-        imagePicker.delegate = self
-        imagePicker.sourceType = UIImagePickerControllerSourceType.photoLibrary
-        self.present(imagePicker, animated: true, completion: nil)
-
-    
+        presentImagePickerWith(sourceType: UIImagePickerControllerSourceType.photoLibrary)
     }
   
     //This func addes pictures to the imagePickerView
